@@ -5,6 +5,7 @@ import { decompress } from "./compression.js";
 
 import type { RootName, Endian, Compression, BedrockLevel } from "./format.js";
 import type { Tag, RootTag, RootTagLike, CompoundTag, NumericArray } from "./tag.js";
+import { InvalidOpeningTagError, InvalidTagError, UnexpectedBufferEndError, UnexpectedEndTagError, UnexpectedRootNameError, VarNumTooLargeError } from "./errors.js";
 
 export interface ReadOptions {
   rootName: boolean | RootName;
@@ -151,7 +152,7 @@ class NBTReader {
 
   #allocate(byteLength: number): void {
     if (this.#byteOffset + byteLength > this.#data.byteLength) {
-      throw new Error("Ran out of bytes to read, unexpectedly reached the end of the buffer");
+      throw new UnexpectedBufferEndError("Ran out of bytes to read, unexpectedly reached the end of the buffer");
     }
   }
 
@@ -169,19 +170,19 @@ class NBTReader {
 
     const type: TAG = this.#readTagType();
     if (type !== TAG.LIST && type !== TAG.COMPOUND) {
-      throw new Error(`Expected an opening List or Compound tag at the start of the buffer, encountered tag type '${type}'`);
+      throw new InvalidOpeningTagError(`Expected an opening List or Compound tag at the start of the buffer, encountered tag type '${type}'`);
     }
 
     const rootNameV: RootName = typeof rootName === "string" || rootName ? this.#readString() : null;
     if (typeof rootName === "string" && rootNameV !== rootName) {
-      throw new Error(`Expected root name '${rootName}', encountered '${rootNameV}'`);
+      throw new UnexpectedRootNameError(`Expected root name '${rootName}', encountered '${rootNameV}'`);
     }
 
     const root: T = this.#readTag<T>(type);
 
     if (strict && this.#data.byteLength > this.#byteOffset) {
       const remaining: number = this.#data.byteLength - this.#byteOffset;
-      throw new Error(`Encountered unexpected End tag at byte offset ${this.#byteOffset}, ${remaining} unread bytes remaining`);
+      throw new UnexpectedEndTagError(`Encountered unexpected End tag at byte offset ${this.#byteOffset}, ${remaining} unread bytes remaining`);
     }
 
     const result: NBTData<T> = new NBTData<T>(root, { rootName: rootNameV, endian, compression, bedrockLevel });
@@ -199,7 +200,7 @@ class NBTReader {
     switch (type) {
       case TAG.END: {
         const remaining: number = this.#data.byteLength - this.#byteOffset;
-        throw new Error(`Encountered unexpected End tag at byte offset ${this.#byteOffset}, ${remaining} unread bytes remaining`);
+        throw new UnexpectedEndTagError(`Encountered unexpected End tag at byte offset ${this.#byteOffset}, ${remaining} unread bytes remaining`);
       }
       case TAG.BYTE: return this.#readByte();
       case TAG.SHORT: return this.#readShort();
@@ -213,14 +214,14 @@ class NBTReader {
       case TAG.COMPOUND: return this.#readCompound();
       case TAG.INT_ARRAY: return this.#readIntArray();
       case TAG.LONG_ARRAY: return this.#readLongArray();
-      default: throw new Error(`Encountered unsupported tag type '${type}' at byte offset ${this.#byteOffset}`);
+      default: throw new InvalidTagError(`Encountered invalid tag type '${type}' at byte offset ${this.#byteOffset}`);
     }
   }
 
   #readTagType(): TAG {
     const type: number = this.#readUnsignedByte();
     if (!isTagType(type)) {
-      throw new Error(`Encountered unsupported tag type '${type}' at byte offset ${this.#byteOffset}`);
+      throw new InvalidTagError(`Encountered invalid tag type '${type}' at byte offset ${this.#byteOffset}`);
     }
     return type;
   }
@@ -290,7 +291,7 @@ class NBTReader {
       if (!(byte & 0x80)) break;
       shift += 7;
       if (shift > 63) {
-        throw new Error(`VarInt size '${shift}' at byte offset ${this.#byteOffset} is too large`);
+        throw new VarNumTooLargeError(`VarInt size '${shift}' at byte offset ${this.#byteOffset} is too large`);
       }
     }
     const zigzag: number = ((((result << 63) >> 63) ^ result) >> 1) ^ (result & (1 << 63));
@@ -314,7 +315,7 @@ class NBTReader {
       if (!(byte & 0x80)) break;
       shift += 7n;
       if (shift > 63n) {
-        throw new Error(`VarLong size '${shift}' at byte offset ${this.#byteOffset} is too large`);
+        throw new VarNumTooLargeError(`VarLong size '${shift}' at byte offset ${this.#byteOffset} is too large`);
       }
     }
     const zigzag: bigint = (result >> 1n) ^ -(result & 1n);

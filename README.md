@@ -15,7 +15,7 @@ Please refer to [NBTify's readme](https://github.com/Offroaders123/NBTify#readme
 <script type="importmap">
     {
     "imports": {
-      "nbtify-readonly-typeless": "https://esm.sh/nbtify-readonly-typeless@1.0.1" // Remove @1.0.1 to use latest version
+      "nbtify-readonly-typeless": "https://esm.sh/nbtify-readonly-typeless@1.1.1" // Remove @1.1.1 to use latest version
     }
   }
 </script>
