@@ -1,6 +1,6 @@
 import { Int8, Int16, Int32, Float32 } from "./primitive.js";
 
-export type Tag = ByteTag | BooleanTag | ShortTag | IntTag | LongTag | FloatTag | DoubleTag | ByteArrayTag | StringTag | ListTag<Tag> | CompoundTag | IntArrayTag | LongArrayTag;
+export type Tag = ByteTag | BooleanTag | ShortTag | IntTag | LongTag | FloatTag | DoubleTag | ByteArrayTag | StringTag | ListTag<Tag> | CompoundTag | IntArrayTag | LongArrayTag | NumericArrayTag;
 
 export type RootTag = CompoundTag | ListTag<Tag>;
 
@@ -43,6 +43,12 @@ export type CompoundTagLike = object;
 export type IntArrayTag = Int32Array | Uint32Array;
 
 export type LongArrayTag = BigInt64Array | BigUint64Array;
+
+export type NumericArrayTag = (Int8Array | Int16Array | Int32Array | BigInt64Array | Float32Array | Float64Array) & {
+  [TAG_TYPE]?: symbol;
+};
+
+export type NumericArrayTagConstructor = typeof Int8Array | typeof Int16Array | typeof Int32Array | typeof BigInt64Array | typeof Float32Array | typeof Float64Array;
 
 export type NumberLike<T extends number> = `${T}` extends `${infer N extends number}` ? N : never;
 
@@ -90,7 +96,7 @@ export function getTagType(value: unknown): TAG | null {
     case value instanceof Int8Array:
     case value instanceof Uint8Array: return TAG.BYTE_ARRAY;
     case typeof value === "string": return TAG.STRING;
-    case value instanceof Array: return TAG.LIST;
+    case value instanceof Array || (value instanceof Int8Array || value instanceof Int16Array || value instanceof Int32Array || value instanceof BigInt64Array || value instanceof Float32Array || value instanceof Float64Array) && TAG_TYPE in value && value[TAG_TYPE] === TAG.LIST: return TAG.LIST;
     case value instanceof Int32Array:
     case value instanceof Uint32Array: return TAG.INT_ARRAY;
     case value instanceof BigInt64Array:
