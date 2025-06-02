@@ -1,4 +1,5 @@
-import { read } from "../dist/index.js";
+// import { read } from "../dist/index.js";
+import { read } from "https://esm.sh/nbtify-readonly-typeless@1.1.2?keep-names";
 // import {read} from "https://esm.sh/nbtify";
 
 let testFileDirectory = await fetch("./nbts.txt").then(res => res.text());

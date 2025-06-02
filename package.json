@@ -1,6 +1,6 @@
 {
   "name": "nbtify-readonly-typeless",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A fork of NBTify which can only read NBT and doesn't have type annotations on every single value.",
   "type": "module",
   "main": "./dist/index.js",
@@ -9,7 +9,7 @@
     "nbtify-readonly-typeless": "dist/bin/index.js"
   },
   "scripts": {
-    "build": "tsc --project ./tsconfig.build.json && dts-bundle-generator dist/index.d.ts -o dist/index.d.ts && esbuild dist/index.js --outdir=dist --allow-overwrite --bundle --minify --external:./errors.js --format=esm && esbuild dist/errors.js --minify --outdir=dist --allow-overwrite",
+    "build": "tsc --project ./tsconfig.build.json && dts-bundle-generator dist/index.d.ts -o dist/index.d.ts && esbuild dist/index.js --outdir=dist --allow-overwrite --bundle --minify --external:./errors.js --format=esm",
     "dev": "tsc --watch",
     "depgraph": "madge src/index.ts -i esm-graph.png"
   },
