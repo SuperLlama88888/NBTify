@@ -30,8 +30,6 @@ export enum TAG {
 
 Object.freeze(TAG);
 
-export const TAG_TYPE = Symbol("nbtify.tag.type");
-
 export function isTagType(type: unknown): type is TAG {
   return typeof type === "number" && type in TAG;
 }

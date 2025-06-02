@@ -1,21 +1,21 @@
 {
-  "name": "nbtify",
-  "version": "2.2.0",
-  "description": "A library to read and write NBT files on the web!",
+  "name": "nbtify-readonly-typeless",
+  "version": "1.0.1",
+  "description": "A fork of NBTify which can only read NBT and doesn't have type annotations on every single value.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "nbtify": "dist/bin/index.js"
+    "nbtify-readonly-typeless": "dist/bin/index.js"
   },
   "scripts": {
-    "build": "tsc --project ./tsconfig.build.json",
+    "build": "tsc --project ./tsconfig.build.json && dts-bundle-generator dist/index.d.ts -o dist/index.d.ts",
     "dev": "tsc --watch",
-    "test": "tsx --test --watch ./test/index.test.ts"
+    "depgraph": "madge src/index.ts -i esm-graph.png"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Offroaders123/NBTify.git"
+    "url": "git+https://github.com/SuperLlama88888/NBTify-readonly-typeless.git"
   },
   "keywords": [
     "javascript",
@@ -29,17 +29,18 @@
     "nbt-library",
     "minecraft-java-edition"
   ],
-  "author": "Brandon Bennett <offroaders123@gmail.com> (https://github.com/Offroaders123)",
+  "author": "SuperLlama88888",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Offroaders123/NBTify/issues"
+    "url": "https://github.com/SuperLlama88888/NBTify-readonly-typeless/issues"
   },
-  "homepage": "https://github.com/Offroaders123/NBTify#readme",
+  "homepage": "https://github.com/SuperLlama88888/NBTify-readonly-typeless#readme",
   "dependencies": {
     "mutf-8": "^1.1.4"
   },
   "devDependencies": {
     "@types/node": "^22.8.1",
+    "dts-bundle-generator": "^9.5.1",
     "tsx": "^4.19.1",
     "typescript": "^5.6.3"
   },
