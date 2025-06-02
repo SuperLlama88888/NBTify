@@ -1,4 +1,4 @@
-import type { NBTDataOptions, StringifyOptions } from "../index.js";
+import type { NBTDataOptions } from "../index.js";
 
 const NBT_PATTERN = /^--nbt$/;
 const SNBT_PATTERN = /^--snbt$/;
@@ -88,7 +88,7 @@ const bedrockLevel: NBTDataOptions["bedrockLevel"] = (() => {
 
 export const format: NBTDataOptions = { rootName, endian, compression, bedrockLevel };
 
-export const space: StringifyOptions["space"] = (() => {
+export const space: string | number | undefined = (() => {
   const space: string | undefined = args
     .find(arg => SPACE_PATTERN.test(arg))
     ?.replace(SPACE_PATTERN, "");
