@@ -1,0 +1,27 @@
+alien-book.nbt
+bigtest-varint-complete.nbt
+bigtest-varint.nbt
+bigtest.nbt
+bigtest.snbt
+biome_definitions.nbt
+BlockEntity.dat
+chunk91_.dat
+empty_list.nbt
+entity_identifiers.nbt
+escapes.snbt
+exponential-floats.snbt
+hello_world.nbt
+house3.mcstructure
+level.dat
+lil.nbt
+list-root.nbt
+list_item_check.snbt
+mca-chunk.nbt
+N_280dfc7dac2f_100000001_.dat
+P_280dfc7dac2f_00000001_knarF_520.dat
+Rail Junction.litematic
+ridiculous.nbt
+ridiculous.snbt
+simple_house.nbt
+small-lobby.schem
+unnamed.nbt
